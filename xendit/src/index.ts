@@ -6,6 +6,8 @@ import transaction from "./routes/transaction.js";
 import customer from "./routes/customer.js";
 import paymentRequest from "./routes/paymentRequest.js";
 import payout from "./routes/payout.js";
+import paymentMethod from "./routes/paymentMethod.js";
+import refund from "./routes/refund.js";
 
 const app = new Hono();
 
@@ -17,7 +19,9 @@ app.route("/invoices", invoice);
 app.route("/balance", balance);
 app.route("/transactions", transaction);
 app.route("/customers", customer);
+app.route("/paymentmethods", paymentMethod);
 app.route("/paymentrequests", paymentRequest);
+app.route("/refunds", refund);
 app.route("/payouts", payout);
 
 serve(
