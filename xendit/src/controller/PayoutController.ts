@@ -34,18 +34,18 @@ export async function getPayoutByID(c: Context) {
 }
 
 // // ✅ Mendapatkan semua Payout berdasarkan reference ID
-// export async function getPayouts(c: Context) {
-//   try {
-//     const { referenceId } = c.req.query();
-//     if (!referenceId) {
-//       return c.json({ error: "referenceId is required" }, 400);
-//     }
-//     const payouts = await xenditPayoutClient.getPayouts({ referenceId });
-//     return c.json(payouts, 200);
-//   } catch (error) {
-//     console.error("Error getting payouts:", error);
-//   }
-// }
+export async function getPayouts(c: Context) {
+  try {
+    const { referenceId } = c.req.query();
+    if (!referenceId) {
+      return c.json({ error: "referenceId is required" }, 400);
+    }
+    const payouts = await xenditPayoutClient.getPayouts({ referenceId });
+    return c.json(payouts, 200);
+  } catch (error) {
+    console.error("Error getting payouts:", error);
+  }
+}
 
 // // ✅ Membatalkan Payout (jika masih dalam status ACCEPTED)
 // export async function cancelPayout(c: Context) {
