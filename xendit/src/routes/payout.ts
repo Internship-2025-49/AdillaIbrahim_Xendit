@@ -3,16 +3,16 @@ import * as payout from "../controller/PayoutController.js";
 
 const app = new Hono();
 
+app.post("/:id/cancel", (c) => payout.cancelPayout(c));
+
 app.post("/", (c) => payout.createPayout(c));
-app.get("/:id", (c) => payout.getPayoutByID(c));
 
-// Route untuk mendapatkan semua payout berdasarkan reference ID
-app.get("/", (c) => payout.getPayouts(c));
+app.get("/byid/:id", (c) => payout.getPayoutById(c));
 
-// Route untuk membatalkan payout
-// app.post("/:id/cancel", (c) => payout.cancelPayout(c));
+app.get("/payouts_channels", (c) => payout.getPayoutChannels(c));
 
-// Route untuk mendapatkan daftar channel payout yang tersedia
-app.get("/channels", (c) => payout.getPayoutChannels(c));
+app.get("/reference/:id", (c) => payout.getPayouts(c));
+
+app.post("/:id/cancel", (c) => payout.cancelPayout(c));
 
 export default app;

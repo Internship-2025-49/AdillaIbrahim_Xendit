@@ -22,48 +22,58 @@ export async function createPayout(c: Context) {
   }
 }
 
-// ✅ Mendapatkan Payout berdasarkan ID
-export async function getPayoutByID(c: Context) {
+export async function getPayoutById(c: Context) {
   try {
     const id = c.req.param("id");
-    const payout = await xenditPayoutClient.getPayoutById({ id });
+    const payout = await xenditPayoutClient.getPayoutById({
+      id: id,
+    });
     return c.json(payout, 200);
   } catch (error) {
-    console.error("Error getting payout by ID:", error);
+    console.error("Error getting payout by id:", error);
   }
 }
 
-// // ✅ Mendapatkan semua Payout berdasarkan reference ID
+export async function getPayoutChannels(c: Context) {
+  try {
+    const payout = await xenditPayoutClient.getPayoutChannels();
+    return c.json(payout, 200);
+  } catch (error) {
+    console.error("Error getting payout channels:", error);
+  }
+}
+
 export async function getPayouts(c: Context) {
   try {
-    const { referenceId } = c.req.query();
-    if (!referenceId) {
-      return c.json({ error: "referenceId is required" }, 400);
-    }
-    const payouts = await xenditPayoutClient.getPayouts({ referenceId });
+    const id = c.req.param("id");
+    const payouts = await xenditPayoutClient.getPayouts({
+      referenceId: id,
+    });
     return c.json(payouts, 200);
   } catch (error) {
     console.error("Error getting payouts:", error);
   }
 }
 
-// // ✅ Membatalkan Payout (jika masih dalam status ACCEPTED)
+// ✅ Membatalkan Payout (jika masih dalam status ACCEPTED)
+export async function cancelPayout(c: Context) {
+  try {
+    const id = c.req.param("id");
+    const payout = await xenditPayoutClient.cancelPayout({ id });
+    return c.json(payout, 200);
+  } catch (error) {
+    console.error("Error cancelling payout:", error);
+  }
+}
+
 // export async function cancelPayout(c: Context) {
 //   try {
 //     const id = c.req.param("id");
-//     const payout = await xenditPayoutClient.cancelPayout({ id });
+//     const payout = await xenditPayoutClient.cancelPayout({
+//       id: id,
+//     });
 //     return c.json(payout, 200);
 //   } catch (error) {
-//     console.error("Error cancelling payout:", error);
+//     console.error("Error canceling payout:", error);
 //   }
 // }
-
-// ✅ Mendapatkan daftar channel Payout yang tersedia
-export async function getPayoutChannels(c: Context) {
-  try {
-    const channels = await xenditPayoutClient.getPayoutChannels();
-    return c.json(channels, 200);
-  } catch (error) {
-    console.error("Error getting payout channels:", error);
-  }
-}
