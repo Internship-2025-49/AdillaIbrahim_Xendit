@@ -12,49 +12,13 @@ const xenditPaymentMethodClient = new PaymentMethodClient({
 
 export async function createPaymentMethod(c: Context) {
   try {
-    const paymentMethodData = await c.req.json(); // Ambil data dari request body
-
+    const paymentMethodData = await c.req.json();
     const paymentMethod = await xenditPaymentMethodClient.createPaymentMethod({
-      data: {
-        type: paymentMethodData.type, // "EWALLET", "BANK_TRANSFER", "CARD"
-        customerId: paymentMethodData.customerId, // FIXED: customerId bukan customer_id
-        reusability: paymentMethodData.reusability || "MULTIPLE_USE", // Default multiple use
-        metadata: paymentMethodData.metadata || {}, // Metadata opsional
-
-        // Jika metode pembayaran adalah E-Wallet
-        ...(paymentMethodData.type === "EWALLET" && {
-          ewallet: {
-            channelCode: paymentMethodData.channelCode,
-            channelProperties: paymentMethodData.channelProperties,
-          },
-        }),
-
-        // Jika metode pembayaran adalah Bank Transfer (VA)
-        ...(paymentMethodData.type === "BANK_TRANSFER" && {
-          channelCode: paymentMethodData.channelCode, // Gunakan langsung channelCode tanpa `bankTransfer`
-          channelProperties: paymentMethodData.channelProperties,
-        }),
-
-        // Jika metode pembayaran adalah Kartu Kredit/Debit
-        ...(paymentMethodData.type === "CARD" && {
-          card: {
-            currency: paymentMethodData.currency || "IDR",
-            channelProperties: paymentMethodData.channelProperties,
-          },
-        }),
-      },
+      data: paymentMethodData,
     });
-
     return c.json(paymentMethod, 201);
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error creating payment method:", error);
-    return c.json(
-      {
-        error: "Failed to create payment method",
-        details: error.message,
-      },
-      400
-    );
   }
 }
 
@@ -114,6 +78,34 @@ export async function expirePaymentMethod(c: Context) {
       paymentMethodId: id,
     });
     return c.json(paymentMethod, 200);
+  } catch (error) {
+    console.error("Error expiring payment method:", error);
+  }
+}
+
+export async function authPaymentMethod(c: Context) {
+  try {
+    const id = c.req.param("id");
+    const paymentMethodData = await c.req.json();
+    const paymentMethod = await xenditPaymentMethodClient.authPaymentMethod({
+      paymentMethodId: id,
+      data: paymentMethodData,
+    });
+    return c.json(paymentMethod, 200);
+  } catch (error) {
+    console.error("Error expiring payment method:", error);
+  }
+}
+
+export async function simulatePayment(c: Context) {
+  try {
+    const id = c.req.param("id");
+    const paymentMethodData = await c.req.json();
+    await xenditPaymentMethodClient.simulatePayment({
+      paymentMethodId: id,
+      data: paymentMethodData,
+    });
+    return c.json({ message: "simulate payment success" }, 200);
   } catch (error) {
     console.error("Error expiring payment method:", error);
   }
