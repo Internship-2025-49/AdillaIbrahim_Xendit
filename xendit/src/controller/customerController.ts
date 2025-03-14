@@ -20,12 +20,12 @@ export async function getCustomer(c: Context) {
 
 export async function createCustomer(c: Context) {
   try {
-    const customerData = await c.req.json(); // Ambil data dari request bod
+    const customerData = await c.req.json();
 
     const customer = await xenditCustomerClient.createCustomer({
       data: {
         referenceId: customerData.referenceId, // Pakai data dari request body
-        type: "INDIVIDUAL", // Tambahkan ini
+        type: "INDIVIDUAL",
         clientName: customerData.clientName,
         email: customerData.email,
         phoneNumber: customerData.phoneNumber,
@@ -59,14 +59,28 @@ export async function createCustomer(c: Context) {
   }
 }
 
-// export async function getCustomerByReferenceID(c: Context) {
-//   try {
-//     const referenceId = c.req.param("referenceId");
-//     const customer = await xenditCustomerClient.getCustomerByReferenceID({
-//       referenceId: referenceId,
-//     });
-//     return c.json(customer, 200);
-//   } catch (error) {
-//     console.error("Error getting customer by reference ID:", error);
-//   }
-// }
+export async function getCustomerByReferenceID(c: Context) {
+  try {
+    const referenceId = c.req.param("referenceId");
+    const customer = await xenditCustomerClient.getCustomerByReferenceID({
+      referenceId: referenceId,
+    });
+    return c.json(customer, 200);
+  } catch (error) {
+    console.error("Error getting customer by reference ID:", error);
+  }
+}
+
+export async function updateCustomer(c: Context) {
+  try {
+    const id = c.req.param("id");
+    const customerData = await c.req.json();
+    const customer = await xenditCustomerClient.updateCustomer({
+      id: id,
+      data: customerData,
+    });
+    return c.json(customer, 200);
+  } catch (error) {
+    console.error("Error updating customer:", error);
+  }
+}
